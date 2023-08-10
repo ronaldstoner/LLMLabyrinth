@@ -1,7 +1,7 @@
 <br/>
 
 <div align="center" style="margin: 30px;">
-	<img src="https://github.com/ronaldstoner/LLMLabyrinth/blob/main/img/logo.png?raw=true" align="center" /> 
+	<img src="https://raw.githubusercontent.com/ronaldstoner/LLMLabyrinth/master/img/logo.png" align="center" /> 
 	<br />
 	<h2>LLMLabyrinth</h2>
 	<h3>⚔️ An AI generated text-based adventure game⚔️</h3>
@@ -22,7 +22,7 @@ LLMLabyrinth is a call back to the old school text based console adventure games
 Find and combine the 3 items to win the game!
 
 # Screenshot
-<img src="https://github.com/ronaldstoner/LLMLabyrinth/blob/main/img/game.png?raw=true" align="center" /> 
+<img src="https://raw.githubusercontent.com/ronaldstoner/LLMLabyrinth/master/img/game.png" align="center" /> 
 
 # Features
 - Directional walking (omg!)
