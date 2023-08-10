@@ -17,14 +17,16 @@ def center_text(text):
         print(centered_text)
 
 ascii_art = '''
- _      _     ___  ___ _           _          _       _   _     
-| |    | |    |  \/  || |         | |        (_)     | | | |    
-| |    | |    | .  . || |     __ _| |__  _ __ _ _ __ | |_| |__  
-| |    | |    | |\/| || |    / _` | '_ \| '__| | '_ \| __| '_ \ 
-| |____| |____| |  | || |___| (_| | |_) | |  | | | | | |_| | | |
-\_____/\_____/\_|  |_/\_____/\__,_|_.__/|_|  |_|_| |_|\__|_| |_|
-                                                                
-                                                               
+
+ _      _     ___  ___ _           _                _       _   _     
+| |    | |    |  \/  || |         | |              (_)     | | | |    
+| |    | |    | .  . || |     __ _| |__  _   _ _ __ _ _ __ | |_| |__  
+| |    | |    | |\/| || |    / _` | '_ \| | | | '__| | '_ \| __| '_ \ 
+| |____| |____| |  | || |___| (_| | |_) | |_| | |  | | | | | |_| | | |
+\_____/\_____/\_|  |_/\_____/\__,_|_.__/ \__, |_|  |_|_| |_|\__|_| |_|
+                                          __/ |                       
+                                         |___/                          
+
 '''
 
 subtitle = "An AI generated text-based adventure game."
@@ -37,7 +39,7 @@ class Game():
     room_desc = {}
     room_items = {}
 
-    room_themes = ["mysterious", "spooky", "sombre", "abandoned", "enchanting", "bizarre"]  # More themes can be added here
+    room_themes = ["mysterious", "spooky", "sombre", "abandoned", "enchanting", "bizarre", "rustic", "futuristic", "vintage", "tropical", "arctic", "underwater", "celestial", "royal", "minimalist", "urban", "industrial", "floral", "gothic", "fairytale", "western", "post-apocalyptic", "medieval", "Asian-inspired", "jungle", "space", "victorian", "pirate", "exotic", "farmhouse", "ocean", "desert", "rainforest", "cave", "nautical", "alpine", "beach", "magic", "jazz", "steampunk"]
 
     def __init__(self, llm):
         self.llm = llm
@@ -69,7 +71,18 @@ class Game():
         if room not in self.room_desc:
             # Only generate a new description if the room hasn't been visited before.
             theme = random.choice(self.room_themes)
-            prompt = f"Describe a scene in a {theme} room."
+            mood_list = ["cheerful", "mournful", "tranquil", "chaotic", "serene", "eerie", "tense", "mystical"]
+            size_list = ["spacious", "compact", "vast", "tiny", "roomy", "cramped", "immense", "cosy"]
+            weather_list = ["stormy", "sunny", "rainy", "foggy", "windy", "snowy", "cloudy", "starlit"]
+
+            modifier_dict = {"mood": random.choice(mood_list), "size": random.choice(size_list), "weather": random.choice(weather_list)}
+
+            # Randomly choose a modifier
+            modifier = random.choice(list(modifier_dict.keys()))
+
+            prompt = f"Describe a scene in a {modifier_dict[modifier]} {theme} room."
+ 
+            #prompt = f"Describe a scene in a {theme} room."
             room_desc_subsequent = self.llm(prompt)
             room_title = f"A {theme.title()} Room"
             self.room_desc[room] = (room_title, room_desc_subsequent)
@@ -89,7 +102,7 @@ class Game():
             self.current_room = self.get_room_id(self.current_position)
             self.generate_room_description(self.current_room) 
             
-            if self.current_room != self.last_room:  #or self.command == "l" or self.command == 'look':
+            if self.current_room != self.last_room:
                 title, desc = self.room_desc[self.current_room]
                 print(f"\n\033[1m{title}\033[0m")
                 print(desc)
