@@ -136,7 +136,7 @@ class Game():
     def process_command(self, command):
         if command in self.directions:
             self.move_room(command)
-        elif command.startswith("pick up") or command.startswith("get"):
+        elif command.startswith("pick up") or command.startswith("get") or command.startswith("g"):
             item = command.split(" ")[-1]
             if item in self.room_items[self.current_room]:
                 print(f"\nYou have picked up \033[1m{item}\033[0m!")
@@ -150,9 +150,9 @@ class Game():
             self.print_inventory()
         elif command == "l" or command == "look":
             self.look()
-        elif command.startswith("combine"):
+        elif command.startswith("combine") or command.startswith("c"):
             items = command.split(" ")[1:]
-            if set(items) == set(self.inventory):
+            if set(items) == set(self.inventory) and len(items) == len(self.items):
                 print("\nCongratulations, you've won!")
                 exit(0)
             else:
