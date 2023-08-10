@@ -55,5 +55,6 @@ Find and combine the 3 items to win the game!
 | s | south |
 | w | west |
 | i | check inventory |
-| combine | combine items |
+| g | get items |
+| c | combine items |
 | q | quit |

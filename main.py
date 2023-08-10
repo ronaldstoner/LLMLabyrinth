@@ -92,10 +92,12 @@ class Game():
     """
     def place_items(self, room):
         self.room_items[room] = []
-        
         for item in self.items:
-            if item not in [item for sublist in self.room_items.values() for item in sublist] and random.uniform(0, 1) < 0.1:
-                self.room_items[room].append(item)
+            # Ensure that the item isn't already assigned to another room.
+            if item not in [item for sublist in self.room_items.values() for item in sublist]:
+                rand = random.uniform(0, 1)
+                if rand < 0.1:
+                    self.room_items[room].append(item)
 
     def run(self):
         while True:
