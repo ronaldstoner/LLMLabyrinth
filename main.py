@@ -43,11 +43,12 @@ class Game():
 
     def __init__(self, llm):
         self.llm = llm
-        self.current_position = [2, 2]  # Starting at the center of the map.
+        self.current_position = [0, 0]  # Starting at the center of the map.
         self.current_room = self.get_room_id(self.current_position)
         self.inventory = []
         self.last_room = None
         self.command = ""
+        self.discovered_rooms = self.initialize_rooms()  # Initialize rooms before the game starts
 
         # Print opening screen/intro
         clear()
@@ -63,6 +64,9 @@ class Game():
                 room = self.get_room_id([i,j])
                 self.place_items(room)
 
+        # Update starting room as discovered
+        self.discovered_rooms[self.get_room_id(self.current_position)] = True
+
     def get_room_id(self, position):
         """ Generate a unique room ID based on map coordinates """
         return f"room_{position[0]}_{position[1]}"
@@ -77,12 +81,9 @@ class Game():
 
             modifier_dict = {"mood": random.choice(mood_list), "size": random.choice(size_list), "weather": random.choice(weather_list)}
 
-            # Randomly choose a modifier
+            # Randomly choose a modifier and then run prompt
             modifier = random.choice(list(modifier_dict.keys()))
-
             prompt = f"Describe a scene in a {modifier_dict[modifier]} {theme} room."
- 
-            #prompt = f"Describe a scene in a {theme} room."
             room_desc_subsequent = self.llm(prompt)
             room_title = f"A {theme.title()} Room"
             self.room_desc[room] = (room_title, room_desc_subsequent)
@@ -95,7 +96,7 @@ class Game():
         for item in self.items:
             # Ensure that the item isn't already assigned to another room.
             if item not in [item for sublist in self.room_items.values() for item in sublist]:
-                rand = random.uniform(0, 1)
+                rand = random.uniform(0, 0)
                 if rand < 0.1:
                     self.room_items[room].append(item)
 
@@ -117,6 +118,30 @@ class Game():
             self.command = input(">").lower()
             self.process_command(self.command)
             self.last_room = self.current_room  # update last_room at the end of running a command
+
+    def initialize_rooms(self):
+        """ Initialize all rooms as unvisited before the game starts """
+        room_dict = {}
+        for i in range(5):
+            for j in range(5):
+                room_dict[self.get_room_id([i, j])] = False
+        return room_dict
+
+    def print_map(self):
+        """ Print the game map with '[X]' marking the current position and '[ ]' marking other discovered rooms. """
+        for i in range(5):
+            for j in range(5):
+                room_id = self.get_room_id([i, j])
+                 
+                # if the room was discovered, print it
+                if self.discovered_rooms[room_id]:
+                    if [i, j] == self.current_position:
+                        print("[X]", end=" ")
+                    else:
+                        print("[ ]", end=" ")
+                else:
+                    print("   ", end=" ") # three spaces for undiscovered room
+            print() # go to next line for each row
 
     def print_possible_directions(self):
         possible_directions = []
@@ -152,6 +177,8 @@ class Game():
             self.print_inventory()
         elif command == "l" or command == "look":
             self.look()
+        elif command == "m" or command == "map":
+            self.print_map()
         elif command.startswith("combine") or command.startswith("c"):
             items = command.split(" ")[1:]
             if set(items) == set(self.inventory) and len(items) == len(self.items):
@@ -169,11 +196,13 @@ class Game():
         title, desc = self.room_desc[self.current_room]
         print(f"\n\033[1m{title}\033[0m")
         print(desc)
-    
+
     def move_room(self, direction):
         next_position = [sum(x) for x in zip(self.current_position, self.directions[direction])]
         if all(0 <= i < 5 for i in next_position):
             self.current_position = next_position
+            # Mark the room as discovered once it's visited
+            self.discovered_rooms[self.get_room_id(self.current_position)] = True
         else:
             print(f"You cannot go {self.dir_full_names[direction]} from here.")
 

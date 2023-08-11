@@ -28,6 +28,7 @@ Find and combine the 3 items to win the game!
 - Directional walking (omg!)
 - AI LLM generated room descriptions
 - Room themes
+- Basic ascii mapping system
 - Inventory
 - Item combinations
 - Win state
@@ -54,6 +55,7 @@ Find and combine the 3 items to win the game!
 | e | east |
 | s | south |
 | w | west |
+| m | map |
 | i | check inventory |
 | g | get items |
 | c | combine items |
